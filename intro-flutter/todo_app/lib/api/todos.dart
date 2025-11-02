@@ -26,10 +26,18 @@ final List<Map<String, dynamic>> todoList = [
 ];
 
 final List<Map<String, dynamic>> todoUsers = [
-    {'id': 1,
+    {
+    'id': 1,
     'nombre': 'Grolbin Orellana',
-    'email': 'grolbin.orellana@unah.hn',
-    'contraseña': 'admin123',
+    'email': 'grolbin@unah.hn',
+    'contrasena': '20232001403&',
     'numero': 93416662
+    },
+   {
+    'id': 2,
+    'nombre': 'Jafet Orellana',
+    'email': 'jafet@unah.hn',
+    'contrasena': '20252001403&',
+    'numero': 9999666
     }
 ];

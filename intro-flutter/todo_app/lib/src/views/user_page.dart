@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_app/api/todos.dart';
 import 'package:todo_app/src/shared/utils.dart';
-import 'package:flutter/widgets.dart';
-import 'package:todo_app/src/widgets/text_Field.dart';
+import 'package:todo_app/src/widgets/app_text.dart';
 
 class UserPage extends StatelessWidget {
   UserPage({super.key, this.user});
@@ -13,6 +12,9 @@ class UserPage extends StatelessWidget {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final emailFormat = RegExp(r'^[A-Za-z0-9._%+-]+@unah\.hn$');
+  final passFormat = RegExp(r'^(?=.*[!@#\$%^&*(),.\-_;]).{6,}$');
 
   final FocusNode emailFocus = FocusNode();
 
@@ -26,7 +28,7 @@ class UserPage extends StatelessWidget {
     if (user != null) {
       nameController.text = user!['nombre'];
       emailController.text = user!['email'];
-      passwordController.text = user!['contraseña'];
+      passwordController.text = user!['contrasena'];
       phoneController.text = user!['numero'];
       
     }
@@ -52,18 +54,56 @@ class UserPage extends StatelessWidget {
 
           children: [
 
-            PersonalizadoTextField(controller: nameController, focusNode: emailFocus, maxLength: 50, labelText: 'Nombre'),
-            SizedBox(height: 16),
-            PersonalizadoTextField(controller: emailController, maxLength: 30, labelText: 'Correo electrónico',keyboardType: TextInputType.emailAddress),
-            SizedBox(height: 16),
-            PersonalizadoTextField(controller: passwordController, maxLength: 50, labelText: 'Contraseña'),
-            SizedBox(height: 16),
-            PersonalizadoTextField(controller: phoneController, maxLength: 12, labelText: 'No. Telefónico', keyboardType: TextInputType.phone,inputFormatters: [FilteringTextInputFormatter.digitsOnly],)
+            TextRegistro(
+             controller: nameController,
+             focusNode: emailFocus, 
+             maxLength: 50, 
+             labelText: 'Nombre',
+             ),
 
+            SizedBox(height: 16),
+
+            TextRegistro(
+            controller: emailController, 
+            maxLength: 30, 
+            labelText: 'Correo institucional (@unah.hn)',
+            keyboardType: TextInputType.emailAddress,
+            ),
+
+            SizedBox(height: 16),
+
+            TextRegistro(controller: passwordController,
+             maxLength: 50, labelText: 'Contraseña',
+            ),
+
+            SizedBox(height: 16),
+
+            TextRegistro(controller: phoneController,
+             maxLength: 12, labelText: 'No. Telefónico',
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly]),
+
+            SizedBox(height: 16),
+
+            TextButton(
+                        onPressed: () {
+                          context.goNamed('login-todo');      
+                        },
+                        child: const Text(
+                          '¿Ya tienes usuario? Inicia Sesión',
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
           ],
 
         ),
       ),
+
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue[300],
         onPressed: () {
@@ -84,6 +124,16 @@ class UserPage extends StatelessWidget {
             );
             return;
           }
+
+          if (!emailFormat.hasMatch((emailController.text))) {
+            Utils.showSnackBar(
+              context: context,
+              title: "El email debe terminar con (@unah.hn)",
+              color: Colors.red,
+            );
+            return;
+          }
+
           if (passwordController.text.isEmpty) {
             Utils.showSnackBar(
               context: context,
@@ -92,6 +142,16 @@ class UserPage extends StatelessWidget {
             );
             return;
           }
+          
+          if (!passFormat.hasMatch((passwordController.text))) {
+            Utils.showSnackBar(
+              context: context,
+              title: "La contraseña debe tener al menos 6 caracteres y un carácter especial",
+              color: Colors.red,
+            );
+            return;
+          }
+
           if (phoneController.text.isEmpty) {
             Utils.showSnackBar(
               context: context,
@@ -100,13 +160,13 @@ class UserPage extends StatelessWidget {
             );
             return;
           }
-
+          
           final Map<String, dynamic> newUser = {
             'id': todoUsers.length + 1,
             'nombre': nameController.text,
-            'emai': emailController.text,
-            'numero': phoneController,
-            'contraseña': passwordController
+            'email': emailController.text,
+            'contrasena': passwordController.text,
+            'numero': phoneController.text
           };
 
           if (userID == null) {
@@ -115,7 +175,6 @@ class UserPage extends StatelessWidget {
             final indice = todoUsers.indexWhere(
               (user) => user['id'].toString() == userID,
             );
-
             todoUsers[indice] = newUser;
           }
           
@@ -129,41 +188,13 @@ class UserPage extends StatelessWidget {
           phoneController.text='';
           passwordController.text='';
 
-          context.goNamed('todo-list');
+          context.goNamed('login-todo');
         },
         child: Icon(Icons.add, color: Colors.blue[50]),
       ),
+      
     );
   }
 }
 
-class New1 extends StatelessWidget {
-  const New1({
-    super.key,
-    required this.nameController,
-  });
 
-  final TextEditingController nameController;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: nameController,
-      decoration: InputDecoration(
-        label: Text('Nombre'),
-        //hint: Text('Su nombre de usuario aquí'),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-    
-        //prefixIcon: Icon(Icons.text_fields_rounded),
-      ),
-    
-      maxLines: 1,
-      maxLength: 50,
-      obscureText: false,
-      keyboardType: TextInputType.visiblePassword,
-      // style: TextStyle(color: Colors.red),
-    );
-  }
-}

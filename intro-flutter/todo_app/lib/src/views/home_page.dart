@@ -4,11 +4,16 @@ import 'package:todo_app/api/todos.dart';
 import 'package:todo_app/src/shared/utils.dart';
 import 'package:todo_app/src/widgets/item_list.dart';
 
+
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.usuario});
+
+final Map<String, dynamic>? usuario;
 
   @override
   Widget build(BuildContext context) {
+    final usuarioNombre=usuario?['nombre'] ?? 'Usuario';
+
     return Scaffold(
       drawer: Drawer(
         child: SafeArea(
@@ -20,16 +25,8 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.red[50],
-                      radius: 40,
-                      child: Text(
-                        'JA',
-                        style: TextStyle(fontSize: 42, color: Colors.red[400]),
-                      ),
-                    ),
                     const SizedBox(height: 8),
-                    const Text('Juan Alvarenga'),
+                    Text(usuarioNombre),
                   ],
                 ),
               ),

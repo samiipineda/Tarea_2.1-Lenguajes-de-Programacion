@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_app/api/todos.dart';
 import 'package:todo_app/src/shared/autenticador.dart';
+import 'package:todo_app/src/shared/utils.dart';
 import '../widgets/app_text.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,6 +11,7 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
+
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
@@ -31,8 +34,17 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      final usuario = todoUsers.firstWhere(
+        (user)=>user['email']==_emailCtrl.text && user['contrasena']==_passCtrl.text,
+      );
+      final usuarioNombre=usuario['nombre'];
+
       Autenticador.isLoggedIn.value = true;
-      context.go('/todos');
+      context.go('/todos', extra:usuario);
+      Utils.showSnackBar(
+            context: context,
+            title: "Bienvenido $usuarioNombre",
+          );
     } else {
       _showSnack('Revisa los campos marcados', color: Colors.black);
     }
@@ -83,21 +95,32 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: [
                       AppTextField(
+
                         label: 'Correo institucional (@unah.hn)',
                         controller: _emailCtrl,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         validator: (v) {
+
                           final value = v?.trim() ?? '';
                           if (value.isEmpty) return 'Campo requerido';
                           if (!emailReg.hasMatch(value)) {
                             return 'El correo institucional debe terminar en @unah.hn';
                           }
+                          
+                          //Validación de usuario
+                          final emailExiste = todoUsers.any((user) => user['email'] == value);
+                          if (!emailExiste) {
+                          return 'El correo no está registrado en el sistema';
+                          } 
+
                           return null;
                         },
                       ),
+
                       const SizedBox(height: 14),
                       AppTextField(
+
                         label: 'Contraseña',
                         controller: _passCtrl,
                         obscureText: _obscure,
@@ -111,15 +134,25 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () => setState(() => _obscure = !_obscure),
                         ),
                         validator: (v) {
+
                           final value = v?.trim() ?? '';
                           if (value.isEmpty) return 'Campo requerido';
                           if (!passReg.hasMatch(value)) {
                             return 'Debe tener al menos 6 caracteres y un carácter especial';
                           }
+
+                          //Validación de usuario
+                          final contrasenaExiste = todoUsers.any((user) => user['contrasena'] == value);
+                          if (!contrasenaExiste) {
+                          return 'La contraseña es incorrecta';
+                          }
+
                           return null;
                         },
                       ),
+
                       const SizedBox(height: 18),
+
                       TextButton(
                         onPressed: () {
                           context.goNamed('signUp-todo');      
@@ -133,7 +166,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 10),
+
                       SizedBox(
                         width: double.infinity,
                         child: FilledButton(
@@ -155,6 +190,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+
+                      
+
                     ],
                   ),
                 ),

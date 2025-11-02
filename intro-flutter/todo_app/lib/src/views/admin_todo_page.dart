@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_app/api/todos.dart';
 import 'package:todo_app/src/shared/utils.dart';
-import 'package:todo_app/src/widgets/text_Field.dart';
+import 'package:todo_app/src/widgets/app_text.dart';
 
 class AdminTodoPage extends StatelessWidget {
   AdminTodoPage({super.key, this.todo});
@@ -35,12 +35,17 @@ class AdminTodoPage extends StatelessWidget {
         padding: EdgeInsetsGeometry.symmetric(vertical: 8, horizontal: 16),
         child: Column(
           children: [
-            PersonalizadoTextField(focusNode: titleFocus,controller: titleController,labelText: 'Titulo'),
+            TextRegistro(focusNode: titleFocus,controller: titleController,labelText: 'Titulo'),
 
             SizedBox(height: 16),
 
             //Widget Personalizado
-            PersonalizadoTextField(controller: descriptionController,maxLines: 4,estiloDecoracion: 1,labelText: 'Descrpción'),
+            TextRegistro(
+              controller: descriptionController,
+            maxLines: 4,
+            estiloDecoracion: 1,
+            labelText: 'Descrpción'
+            ),
 
           ],
         ),

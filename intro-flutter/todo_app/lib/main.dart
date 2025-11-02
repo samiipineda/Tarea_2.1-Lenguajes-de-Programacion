@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: GoRouter(
-        initialLocation: '/todos',
+        initialLocation: '/login',
         routes: [
 
           GoRoute(
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
                 name: 'signUp-todo',
                 builder: (state, context) => UserPage(),
               ),
+              
           GoRoute(
           path: '/login',
           name: 'login-todo',
