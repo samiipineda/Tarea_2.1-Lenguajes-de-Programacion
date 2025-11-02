@@ -24,3 +24,12 @@ final List<Map<String, dynamic>> todoList = [
     'completed': false,
   },
 ];
+
+final List<Map<String, dynamic>> todoUsers = [
+    {'id': 1,
+    'nombre': 'Grolbin Orellana',
+    'email': 'grolbin.orellana@unah.hn',
+    'contraseña': 'admin123',
+    'numero': 93416662
+    }
+];

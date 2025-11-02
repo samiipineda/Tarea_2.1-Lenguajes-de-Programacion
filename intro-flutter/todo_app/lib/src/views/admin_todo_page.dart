@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_app/api/todos.dart';
 import 'package:todo_app/src/shared/utils.dart';
+import 'package:todo_app/src/widgets/text_Field.dart';
 
 class AdminTodoPage extends StatelessWidget {
   AdminTodoPage({super.key, this.todo});
@@ -34,41 +35,21 @@ class AdminTodoPage extends StatelessWidget {
         padding: EdgeInsetsGeometry.symmetric(vertical: 8, horizontal: 16),
         child: Column(
           children: [
-            TextField(
-              focusNode: titleFocus,
-              controller: titleController,
-              decoration: InputDecoration(
-                label: Text('Titulo'),
-                hint: Text('Eje. Crear opción de eliminar'),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+            PersonalizadoTextField(focusNode: titleFocus,controller: titleController,labelText: 'Titulo'),
 
-                // suffixIcon: IconButton(
-                //   icon: Icon(Icons.visibility),
-                //   onPressed: () {},
-                // ),
-                prefixIcon: Icon(Icons.text_fields_rounded),
-              ),
-
-              maxLines: 1,
-              maxLength: 50,
-              obscureText: false,
-              keyboardType: TextInputType.visiblePassword,
-              // style: TextStyle(color: Colors.red),
-            ),
             SizedBox(height: 16),
-            TextField(
-              controller: descriptionController,
-              maxLines: 4,
-              decoration: InputDecoration(label: Text('Descripción')),
-            ),
+
+            //Widget Personalizado
+            PersonalizadoTextField(controller: descriptionController,maxLines: 4,estiloDecoracion: 1,labelText: 'Descrpción'),
+
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue[300],
         onPressed: () {
+          //TODO: mostrar icono de carga usando gestores de estado
+
           if (titleController.text.isEmpty) {
             // ScaffoldMessenger.of(context).showSnackBar(
             //   SnackBar(
@@ -105,24 +86,7 @@ class AdminTodoPage extends StatelessWidget {
 
             todoList[indice] = newTodo;
           }
-
-          // final snackBar = SnackBar(
-          //   content: const Text('Yay! A SnackBar!'),
-          //   action: SnackBarAction(
-          //     label: 'Undo',
-          //     onPressed: () {
-          //       // Some code to undo the change.
-          //     },
-          //   ),
-          // );
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text('Tarea creada correctamente'),
-          //     // backgroundColor: ,
-          //     duration: Duration(days: 4),
-          //     action: SnackBarAction(label: 'Cerrar', onPressed: () {}),
-          //   ),
-          // );
+          
           Utils.showSnackBar(
             context: context,
             title: "Tarea creada correctamente",

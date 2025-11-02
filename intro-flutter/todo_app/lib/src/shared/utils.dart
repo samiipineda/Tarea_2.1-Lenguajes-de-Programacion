@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class Utils {
+
   static showSnackBar({
     required BuildContext context,
     required String title,

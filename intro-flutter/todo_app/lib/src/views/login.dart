@@ -121,7 +121,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 18),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.goNamed('signUp-todo');      
+                        },
                         child: const Text(
                           '¿No tienes cuenta? Crea tu usuario',
                           style: TextStyle(
