@@ -32,7 +32,10 @@ class MyApp extends StatelessWidget {
           GoRoute(
             path: '/todos',        
             name: 'todo-list',
-            builder: (state, context) => HomePage(),
+            builder: (context, state) {
+              final usuario = state.extra as Map<String, dynamic>?;
+              return HomePage(usuario: usuario);
+            },
             routes: [
               GoRoute(
                 path: '/create', //?   /todos/create
