@@ -14,52 +14,89 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.red[50],
-                    radius: 40,
-                    child: Text(
-                      'JA',
-                      style: TextStyle(fontSize: 42, color: Colors.red[400]),
+        child: SafeArea(
+          // 🔥 evita que la barra tape el contenido
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.red[50],
+                      radius: 40,
+                      child: Text(
+                        'JA',
+                        style: TextStyle(fontSize: 42, color: Colors.red[400]),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text('Juan Alvarenga'),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, thickness: 1),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    const ListTile(
+                      leading: Icon(Icons.home),
+                      title: Text('Inicio'),
+                    ),
+                    const ListTile(
+                      leading: Icon(Icons.important_devices),
+                      title: Text('Importantes'),
+                    ),
+                    const ListTile(
+                      leading: Icon(Icons.warning),
+                      title: Text('Críticas'),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.calendar_month_rounded),
+                      title: const Text('Calendario'),
+                      onTap: () {
+                        context.pop();
+                        context.pushNamed('new-todo');
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Text('Configuraciones'),
+                    ),
+                    const Divider(),
+                    const ListTile(
+                      leading: Icon(Icons.calendar_month_rounded),
+                      title: Text('Calendario'),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.red),
+                  title: const Text(
+                    'Cerrar sesión',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text('Juan Alvarenga'),
-                ],
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.go('/');
+                  },
+                ),
               ),
-            ),
-
-            ListTile(leading: Icon(Icons.home), title: Text('Inicio')),
-            ListTile(
-              leading: Icon(Icons.important_devices),
-              title: Text('Importantes'),
-            ),
-            ListTile(leading: Icon(Icons.warning), title: Text('Críticas')),
-            ListTile(
-              leading: Icon(Icons.calendar_month_rounded),
-              title: Text('Calendario'),
-              onTap: () {
-                //
-                context.pop();
-                context.pushNamed('new-todo');
-              },
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Configuraciones'),
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.calendar_month_rounded),
-              title: Text('Calendario'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       appBar: AppBar(title: const Text('TODO-App')),
@@ -70,8 +107,8 @@ class HomePage extends StatelessWidget {
             itemCount: todoList.length,
             itemBuilder: (BuildContext context, int index) {
               return Dismissible(
+                key: Key(todoList[index]['id'].toString()),
                 confirmDismiss: (direction) async {
-                  //? Para actualizar
                   if (direction == DismissDirection.endToStart) {
                     context.pushNamed(
                       'update-todo',
@@ -80,8 +117,6 @@ class HomePage extends StatelessWidget {
                     );
                     return false;
                   }
-
-                  //? Para eliminar
                   return await Utils.showConfirm(
                     context: context,
                     confirmButton: () {
@@ -89,11 +124,8 @@ class HomePage extends StatelessWidget {
                     },
                   );
                 },
-                onDismissed: (direction) {
-                  print(direction);
-                },
                 background: Container(
-                  padding: EdgeInsets.only(left: 16),
+                  padding: const EdgeInsets.only(left: 16),
                   color: Colors.red,
                   child: Align(
                     alignment: Alignment.centerLeft,
@@ -105,7 +137,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 secondaryBackground: Container(
-                  padding: EdgeInsets.only(right: 16),
+                  padding: const EdgeInsets.only(right: 16),
                   color: Colors.blue,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -118,7 +150,7 @@ class HomePage extends StatelessWidget {
                           color: Colors.blue[50],
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Icon(
                         Icons.edit_outlined,
                         color: Colors.blue[50],
@@ -127,24 +159,15 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-
-                key: Key(todoList[index]['id'].toString()),
                 child: ItemList(todo: todoList[index]),
               );
             },
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue[300],
-        onPressed: () {
-          // navegar a otra pantalla (Navigator 1.0)
-          // Navigator.of(context).pushNamed('/admin-todos');
-          // context.go('/home/admin-todos');
-          context.goNamed('new-todo');
-          // context.pushNamed('form');
-        },
+        onPressed: () => context.goNamed('new-todo'),
         child: Icon(Icons.add, color: Colors.blue[50]),
       ),
     );
